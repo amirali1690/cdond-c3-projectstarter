@@ -129,29 +129,24 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install tar gzip
-          command: |
-            yum install tar gzip
-      - run:
           name: Ensure back-end infrastructure exists
           command: |
             aws cloudformation deploy \
               --template-file .circleci/files/backend.yml \
               --tags project=your-tag \
-               --stack-name udapeople-backend-1 \
-               --parameter-overrides ID=1  
+               --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID} \
+               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID}" 
       - run:
           name: Ensure front-end infrastructure exist
           command: |
             aws cloudformation deploy \
               --template-file .circleci/files/frontend.yml \
-              --tags project=your-tag \
-              --stack-name udapeople-frontend-1 \
-              --parameter-overrides ID=1  
+              #--tags project=your-tag \
+              # --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID} \
+              # --parameter-overrides ID="${CIRCLE_WORKFLOW_ID}" 
       - run:
           name: Add back-end ip to ansible inventory
           command: |
-            # Your code here
             exit 1
       - persist_to_workspace:
           root: ~/
