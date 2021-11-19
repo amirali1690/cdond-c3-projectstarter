@@ -177,25 +177,26 @@ jobs:
           when: on_fail
 
 
-#  configure-infrastructure:
-#    docker:
-#      # Docker image here that supports Ansible
-#    steps:
-#      # Checkout code from git
-#      # Add ssh keys with fingerprint
-#      # attach workspace
-#      - run:
-#          name: Install dependencies
-#          command: |
-#            # Your code here
-#            exit 1
-#      - run:
-#          name: Configure server
-#          command: |
-#            # Your code here
-#            exit 1
-#      # Here's where you will add some code to rollback on failure      
-#
+  configure-infrastructure:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - add_ssh_keys: 
+          fingerprints:
+            - "3d:22:b0:c1:a7:65:32:db:ad:f7:c4:61:58:f1:7c:6f:2f:ba:e7:64	"
+      attach_workspace:
+        at: project/.circleci/ansible/
+      - run:
+          name: "install dependencies"
+          command: |
+            yum -y install tar gzip ansible
+      - run:
+          name: Configure server
+          command: |
+              cd .circleci/ansible
+              ansible-playbook -i inventory.txt configure-server.yml     
+
 #  run-migrations:
 #    docker:
 #      # Docker image here that supports NodeJS
