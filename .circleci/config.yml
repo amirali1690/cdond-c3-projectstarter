@@ -166,9 +166,9 @@ jobs:
               --output text > .circleci/ansible/inventory.txt
 
       - persist_to_workspace:
-          root: ansible
+          root: .circleci/ansible
           paths:
-            - .circleci/ansible/inventory.txt
+            - inventory.txt
       - run:
           name: delete backend and frontend stacks on failure
           command: |
@@ -196,11 +196,11 @@ jobs:
             && rm -rf /var/cache/apk/*
             apk add --update ansible
       - attach_workspace:
-          at: /tmp/ansible
+          at: /tmp/.circleci/ansible
       - run:
           name: Configure server
           command: |
-            ansible-playbook -i /tmp/ansible/inventory.txt .circleci/ansible/configure-server.yml 
+            ansible-playbook -i /tmp/.circleci/ansible/inventory.txt .circleci/ansible/configure-server.yml 
 
 #  run-migrations:
 #    docker:
