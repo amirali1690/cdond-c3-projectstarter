@@ -198,12 +198,12 @@ jobs:
             && rm -rf /var/cache/apk/*
             apk add --update ansible
       - attach_workspace:
-          at: /tmp/.circleci/ansible
+          at: .circleci/ansible
       - run:
           name: Configure server
           command: |
-            cat /tmp/.circleci/ansible/inventory.txt
-            ansible-playbook -i /tmp/.circleci/ansible/inventory.txt .circleci/ansible/configure-server.yml 
+            cat .circleci/ansible/inventory.txt
+            ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/configure-server.yml 
 
 #  run-migrations:
 #    docker:
