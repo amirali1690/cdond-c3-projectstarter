@@ -45,7 +45,6 @@ jobs:
           command: |
             cd frontend
             npm install
-            npm audit-fix 
             npm run build
       - save_cache:
           paths: [frontend/node_modules]
@@ -216,6 +215,7 @@ jobs:
           command: |
             cd backend
             npm install
+            npm audit-fix 
             # Run and sve the migration output
             npm run migrations > migrations_dump.txt
       - run:
