@@ -283,6 +283,7 @@ jobs:
                 awscli \
             && rm -rf /var/cache/apk/*
             apk add --update ansible
+            apk add --update nodejs npm
       - run:
           name: Deploy backend
           command: |
