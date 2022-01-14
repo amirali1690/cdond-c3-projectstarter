@@ -295,7 +295,7 @@ jobs:
             tar -C backend -czvf artifact.tar .
             cp artifact.tar ~/project/.circleci/ansible/roles/deploy/files
             echo "Contents  of the inventory.txt file is -------"
-            cat .circleci/ansibleinventory.txt
+            cat .circleci/ansible/inventory.txt
             ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/deploy-backend.yml
 
       - destroy-environment
