@@ -296,9 +296,10 @@ jobs:
             cp artifact.tar ~/project/.circleci/ansible/roles/deploy/files
             echo "Contents  of the inventory.txt file is -------"
             cat .circleci/ansibleinventory.txt
-            ansible-playbook -i .circleci/ansibleinventory.txt .circleci/ansibledeploy-backend.yml
+            ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/deploy-backend.yml
 
-      # Here's where you will add some code to rollback on failure  
+      - destroy-environment
+      - revert-migrations 
 
 #  smoke-test:
 #    docker:
