@@ -271,7 +271,7 @@ jobs:
           fingerprints:
             - "3d:22:b0:c1:a7:65:32:db:ad:f7:c4:61:58:f1:7c:6f:2f:ba:e7:64	"
       - attach_workspace:
-          at: .circleci/ansible
+          at: ~/
       - run:
           name: Install dependencies
           command: |
@@ -296,7 +296,7 @@ jobs:
             mv artifact.tar ~/project/.circleci/ansible/roles/deploy/files
             echo "Contents  of the inventory.txt file is -------"
             cat .circleci/ansible/inventory.txt
-            ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/deploy-backend.yml -vv
+            ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/deploy-backend.yml -vv
 
       - destroy-environment
       - revert-migrations 
