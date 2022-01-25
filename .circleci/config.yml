@@ -138,16 +138,16 @@ jobs:
             aws cloudformation deploy \
               --template-file .circleci/files/backend.yml \
               --tags project=final-uda \
-              --stack-name udapeople-backend \ #-${CIRCLE_WORKFLOW_ID}
-              --parameter-overrides ID="1"   #"${CIRCLE_WORKFLOW_ID}" 
+              --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID} \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID}" 
       - run:
           name: Ensure front-end infrastructure exist
           command: |
             aws cloudformation deploy \
               --template-file .circleci/files/frontend.yml \
               --tags project=final-uda \
-              --stack-name udapeople-frontend\ #-${CIRCLE_WORKFLOW_ID} 
-              --parameter-overrides ID="1" #"${CIRCLE_WORKFLOW_ID}" 
+              --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID} \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID}" 
       - run:
           name: echo backe-end ip
           command: |
@@ -172,8 +172,8 @@ jobs:
       - run:
           name: delete backend and frontend stacks on failure
           command: |
-            aws cloudformation delete-stack --stack-name udapeople-backend  #-${CIRCLE_WORKFLOW_ID}
-            aws cloudformation delete-stack --stack-name udapeople-frontend  #-${CIRCLE_WORKFLOW_ID}
+            aws cloudformation delete-stack --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID}
+            aws cloudformation delete-stack --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID}
           when: on_fail
 
   configure-infrastructure:
@@ -223,7 +223,7 @@ jobs:
           command: |
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
-              curl -H "Content-Type: text/plain" -H "token: a0041c4f-b6cc-4e5d-a506-112691f936e8" --request PUT --data "1" https://api.memstash.io/values/migration_1  #${CIRCLE_WORKFLOW_ID}
+              curl -H "Content-Type: text/plain" -H "token: a0041c4f-b6cc-4e5d-a506-112691f936e8" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID}
             fi
       - destroy-environment
       - revert-migrations
@@ -255,8 +255,8 @@ jobs:
             npm install
             npm run build
             tar -czvf artifact.tar.gz dist
-            aws s3 cp dist s3://udapeople-1 --recursive  #-${CIRCLE_WORKFLOW_ID}
-            aws s3 cp .env s3://udapeople-3    #-${CIRCLE_WORKFLOW_ID} 
+            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID} --recursive
+            aws s3 cp .env s3://udapeople-${CIRCLE_WORKFLOW_ID} 
             
       - destroy-environment
       - revert-migrations
@@ -293,7 +293,8 @@ jobs:
             cd ..
             # Zip the directory
             tar -C backend -czvf artifact.tar .
-            mv artifact.tar ~/project/.circleci/ansible/roles/deploy/files
+            cp artifact.tar .circleci/ansible/roles/deploy/files
+            mv artifact.tar .circleci/ansible/roles/deploy/files
             echo "Contents  of the inventory.txt file is -------"
             cat .circleci/ansible/inventory.txt
             ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/deploy-backend.yml -vv
