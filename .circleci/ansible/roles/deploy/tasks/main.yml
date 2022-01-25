@@ -6,7 +6,7 @@
     
 - name: Upload app 
   copy:
-    src: files/artifact.tar
+    src: artifact.tar
     dest: "~/app"
 
 
