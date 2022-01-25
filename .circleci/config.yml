@@ -140,7 +140,7 @@ jobs:
               --tags project=final-uda \
               --stack-name udapeople-backend \
               # -${CIRCLE_WORKFLOW_ID} \
-              --parameter-overrides ID="1"
+              --parameter-overrides ID="amirali1690"
               #${CIRCLE_WORKFLOW_ID}" 
       - run:
           name: Ensure front-end infrastructure exist
@@ -150,7 +150,7 @@ jobs:
               --tags project=final-uda \
               --stack-name udapeople-frontend \
               #-${CIRCLE_WORKFLOW_ID} \
-              --parameter-overrides ID="1"
+              --parameter-overrides ID="amirali1690"
               #${CIRCLE_WORKFLOW_ID}" 
       - run:
           name: echo backe-end ip
