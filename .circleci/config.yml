@@ -311,7 +311,8 @@ jobs:
             ls -l
             cd files
             ls -l
-            cd ..
+            cd ../../../../../
+            ls -l
             echo "Contents  of the inventory.txt file is -------"
             cat .circleci/ansible/inventory.txt
             ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/deploy-backend.yml -vv
