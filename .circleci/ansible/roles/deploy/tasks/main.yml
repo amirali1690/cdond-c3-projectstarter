@@ -5,8 +5,8 @@
     state: directory
     
 - name: Upload app 
-  copy:
-    src: artifact.tar
+  ansible.builtin.copy:
+    src: .circleci/ansible/roles/deploy/files/artifact.tar
     dest: "~/app"
 
 
