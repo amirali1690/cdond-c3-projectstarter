@@ -4,10 +4,17 @@
     path: ~/app
     state: directory
     
+
+- name: "unarchive backend files"
+  unarchive:
+    src: artifact.tar
+    dest: /home/ubuntu/app
+
 - name: Upload app 
   ansible.builtin.copy:
     src: artifact.tar
     dest: "~/app"
+    remote_src: yes
 
 
 - name: Install dependencies
