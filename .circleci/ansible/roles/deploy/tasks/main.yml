@@ -10,11 +10,6 @@
     src: artifact.tar
     dest: /home/ubuntu/app
 
-- name: Upload app 
-  ansible.builtin.copy:
-    src: artifact.tar
-    dest: "~/app"
-    remote_src: yes
 
 
 - name: Install dependencies
@@ -26,7 +21,6 @@
     npm install -g npm
     npm install -g pm2
     cd /home/ubuntu/app
-    tar xf /home/ubuntu/app/artifact.tar
   
 - name: Start backend
   shell:  |
