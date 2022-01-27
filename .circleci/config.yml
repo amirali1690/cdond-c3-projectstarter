@@ -138,8 +138,8 @@ jobs:
             aws cloudformation deploy \
               --template-file .circleci/files/backend.yml \
               --tags project=final-uda \
-              --stack-name udapeople-backend \
-              --parameter-overrides ID="amirali1690"
+              --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID} \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID}"
               # -${CIRCLE_WORKFLOW_ID} \
               #${CIRCLE_WORKFLOW_ID}" 
       - run:
@@ -148,8 +148,8 @@ jobs:
             aws cloudformation deploy \
               --template-file .circleci/files/frontend.yml \
               --tags project=final-uda \
-              --stack-name udapeople-frontend \
-              --parameter-overrides ID="amirali1690"
+              --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID} \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID}"
               #-${CIRCLE_WORKFLOW_ID} \
               #${CIRCLE_WORKFLOW_ID}" 
       - run:
@@ -176,9 +176,9 @@ jobs:
       - run:
           name: delete backend and frontend stacks on failure
           command: |
-            aws cloudformation delete-stack --stack-name udapeople-backend
+            aws cloudformation delete-stack --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID}
             #-${CIRCLE_WORKFLOW_ID}
-            aws cloudformation delete-stack --stack-name udapeople-frontend
+            aws cloudformation delete-stack --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID}
             #-${CIRCLE_WORKFLOW_ID}
           when: on_fail
 
@@ -261,10 +261,8 @@ jobs:
             npm install
             npm run build
             tar -czvf artifact.tar.gz dist
-            aws s3 cp dist s3://udapeople-amirali1690 --recursive
-            #-${CIRCLE_WORKFLOW_ID}
-            aws s3 cp .env s3://udapeople-amirali1690
-            #${CIRCLE_WORKFLOW_ID} 
+            aws s3 cp dist s3://udapeople-amirali1690-${CIRCLE_WORKFLOW_ID} --recursive
+            aws s3 cp .env s3://udapeople-amirali1690-${CIRCLE_WORKFLOW_ID}
             
             
       - destroy-environment
@@ -311,28 +309,46 @@ jobs:
       - revert-migrations 
 
 
-#  smoke-test:
-#    docker:
-#      # Lightweight Docker image 
-#    steps:
-#      # Checkout code from git
-#      - run:
-#          name: Install dependencies
-#          command: |
-#            # your code here
-#      - run:
-#          name: Get backend url
-#          command: |
-#            # your code here
-#      - run:
-#          name: Backend smoke test.
-#          command: |
-#            # your code here
-#      - run:
-#          name: Frontend smoke test.
-#          command: |
-#            # your code here
-#      # Here's where you will add some code to rollback on failure  
+ smoke-test:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --no-cache curl
+            apk add --no-cache --upgrade bash
+            apk add --no-cache --update ansible
+            apk add --no-cache openssh-client
+            pip3 install awscli
+      - run:
+          name: Get backend url
+          command: |
+            export API_URL="http://${BACKEND_IP}:3030"
+            echo "${API_URL}"
+      - run:
+          name: Backend smoke test.
+          command: |
+            if curl "${API_URL}/api/status" | grep "ok"
+            then
+                return 0
+            else
+                return 1
+            fi
+      - run:
+          name: Frontend smoke test.
+          command: |
+            URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-east-1.amazonaws.com/#/employees"            
+            echo ${URL} 
+            if curl -s ${URL} | grep "Welcome"
+            then
+                # Change this to 0 after the job fails
+              return 1
+            else
+              return 1
+            fi
+      # Here's where you will add some code to rollback on failure  
 #
 #  cloudfront-update:
 #    docker:
