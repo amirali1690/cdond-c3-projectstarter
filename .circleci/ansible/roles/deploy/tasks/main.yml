@@ -20,6 +20,9 @@
     apt-get install gcc g++ make -y
     npm install -g npm
     npm install -g pm2
+    pm2 start npm -- start
+    cd dist
+    pm2 start main.js --update-env
     cd /home/ubuntu/app
   
 - name: Start backend
