@@ -9,32 +9,39 @@
   unarchive:
     src: artifact.tar
     dest: /home/ubuntu/app
+    owner: ubuntu
+    group: ubuntu
+    mode: 0755
 
 
 
-- name: Install dependencies
-  become: true
-  shell: |
-    curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
-    apt-get install -y nodejs
-    apt-get install gcc g++ make -y
-    npm install -g npm
-    npm install -g pm2
-    pm2 start npm -- start
-    cd dist
-    pm2 start main.js --update-env
-    cd /home/ubuntu/app
+#- name: Install dependencies
+#  become: true
+#  shell: |
+#    curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+#    apt-get install -y nodejs
+#    apt-get install gcc g++ make -y
+#    cd backend
+#    npm install -g npm
+#    npm install -g pm2
+#    pm2 start npm -- start
+#    cd dist
+#    pm2 start main.js --update-env
+#    cd /home/ubuntu/app
   
 - name: Start backend
   shell:  |
-    /usr/bin/pm2 start /home/ubuntu/app/dist/main.js --name backend -f
+    cd ~/app
+    npm i
+    pm2 start main.js --update-env
+#/usr/bin/pm2 start /home/ubuntu/app/dist/main.js --name backend -f
   environment:
     ENVIRONMENT: production
     NODE_ENV: production
     TYPEORM_CONNECTION: postgres
     TYPEORM_MIGRATIONS_DIR: ~/src/migrations
     TYPEORM_MIGRATIONS: ~/src/migrations/*.ts
-    TYPEORM_ENTITIES: ~/src/modules/domain/**/*.entity.ts
+    TYPEORM_ENTITIES: "./modules/domain/**/*.entity*.{ts,js}"
     TYPEORM_HOST: database-1.cze1eqbiyefx.us-west-2.rds.amazonaws.com
     TYPEORM_PORT: 5432
     TYPEORM_USERNAME: postgres
