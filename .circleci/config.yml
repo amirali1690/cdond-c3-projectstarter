@@ -138,8 +138,8 @@ jobs:
             aws cloudformation deploy \
               --template-file .circleci/files/backend.yml \
               --tags project=final-uda \
-              --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID} \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID}"
+              --stack-name udapeople-backend-amirali1690 \
+              --parameter-overrides ID="amirali1690"
               # -${CIRCLE_WORKFLOW_ID} \
               #${CIRCLE_WORKFLOW_ID}" 
       - run:
@@ -148,8 +148,8 @@ jobs:
             aws cloudformation deploy \
               --template-file .circleci/files/frontend.yml \
               --tags project=final-uda \
-              --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID} \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID}"
+              --stack-name udapeople-frontend-amirali1690 \
+              --parameter-overrides ID="amirali1690"
               #-${CIRCLE_WORKFLOW_ID} \
               #${CIRCLE_WORKFLOW_ID}" 
       - run:
@@ -264,8 +264,10 @@ jobs:
             npm install
             npm run build
             tar -czvf artifact.tar.gz dist
-            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID} --recursive
-            aws s3 cp .env s3://udapeople-${CIRCLE_WORKFLOW_ID}
+            aws s3 cp dist s3://udapeople-amirali1690 --recursive
+            #${CIRCLE_WORKFLOW_ID}
+            aws s3 cp .env s3://udapeople-amirali1690
+            #${CIRCLE_WORKFLOW_ID}
             
             
       - destroy-environment
@@ -344,7 +346,8 @@ jobs:
       - run:
           name: Frontend smoke test.
           command: |
-            URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-east-1.amazonaws.com/#/employees"            
+            URL="http://udapeople-amirali1690.s3-website-us-east-1.amazonaws.com/#/employees"         
+            #${CIRCLE_WORKFLOW_ID:0:7}   
             echo ${URL} 
             if curl -s ${URL} | grep "Welcome"
             then
