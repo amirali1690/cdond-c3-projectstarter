@@ -176,9 +176,9 @@ jobs:
       - run:
           name: delete backend and frontend stacks on failure
           command: |
-            aws cloudformation delete-stack --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID}
+            aws cloudformation delete-stack --stack-name udapeople-backend
             #-${CIRCLE_WORKFLOW_ID}
-            aws cloudformation delete-stack --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID}
+            aws cloudformation delete-stack --stack-name udapeople-frontend
             #-${CIRCLE_WORKFLOW_ID}
           when: on_fail
 
@@ -193,6 +193,7 @@ jobs:
       - run:
           name: "install dependencies"
           command: |
+            RUN echo -e "http://nl.alpinelinux.org/alpine/v3.5/main\nhttp://nl.alpinelinux.org/alpine/v3.5/community" > /etc/apk/repositories
             apk add --no-cache \
                 python3 \
                 py3-pip \
