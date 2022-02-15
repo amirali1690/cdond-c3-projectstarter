@@ -18,7 +18,7 @@
 - name: Install dependencies
   become: true
   shell: |
-    curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+    curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
     apt-get install -y nodejs
     apt-get install gcc g++ make -y
     cd backend
@@ -31,8 +31,9 @@
   
 - name: Start backend
   shell:  |
-    cd ~/app
+    cd ~/app/dist
     npm i
+    npm audit fix --force
     pm2 start main.js --update-env
 #/usr/bin/pm2 start /home/ubuntu/app/dist/main.js --name backend -f
   environment:
