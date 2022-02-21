@@ -10,20 +10,18 @@
   apt:
     upgrade: "yes"
 
-- name: "install dependencies."
+- name: remove dependencies that are no longer required
   become: yes
   apt:
-    name: ["nodejs"]
-    state: latest
-    update_cache: yes
+    autoremove: yes
 
 - name: "install dependencies."
   become: yes
   apt:
-    name: ["npm"]
+    name: ["nodejs", "npm"]
     state: latest
     update_cache: yes
-    
+
 - name: "install pm2"
   become: yes
   npm:
@@ -31,8 +29,3 @@
     global: yes
     production: yes
     state: present
-
-- name: remove dependencies that are no longer required
-  become: yes
-  apt:
-    autoremove: yes
