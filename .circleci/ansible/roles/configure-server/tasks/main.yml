@@ -2,9 +2,7 @@
 - name: "upgrade packages."
   become: true
   apt:
-    update_cache: yes
-    upgrade: yes
-    force_apt_get: yes
+    upgrade: "yes"
 
 - name: "install dependencies."
   become: true
