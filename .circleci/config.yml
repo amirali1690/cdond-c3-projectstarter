@@ -192,10 +192,8 @@ jobs:
       - run:
           name: "install dependencies"
           command: |
-            apk update && apk upgrade
             apk add --update ansible
-            apk add --update nodejs
-            apk add --update tar gzip npm curl
+            apk add --update tar gzip ansible nodejs npm curl
             pip install awscli
       - attach_workspace:
           at: .circleci/ansible
