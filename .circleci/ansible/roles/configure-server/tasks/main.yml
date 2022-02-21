@@ -17,6 +17,7 @@
 
 - name: "install dependencies."
   become: yes
+  force_apt_get: no
   apt:
     name: ["nodejs", "npm"]
     state: latest
