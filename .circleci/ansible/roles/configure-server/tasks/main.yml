@@ -10,15 +10,18 @@
   apt:
     upgrade: "yes"
 
-- name: remove dependencies that are no longer required
+- name: "install dependencies."
   become: yes
   apt:
-    autoremove: yes
+    name: ["nodejs"]
+    state: latest
+    update_cache: yes
+    force_apt_get: yes
 
 - name: "install dependencies."
   become: yes
   apt:
-    name: ["nodejs", "npm"]
+    name: ["npm"]
     state: latest
     update_cache: yes
     force_apt_get: yes
@@ -30,3 +33,8 @@
     global: yes
     production: yes
     state: present
+
+- name: remove dependencies that are no longer required
+  become: yes
+  apt:
+    autoremove: yes
