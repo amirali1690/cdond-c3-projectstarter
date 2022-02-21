@@ -188,26 +188,36 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys: 
-          fingerprints:
-            - "3d:22:b0:c1:a7:65:32:db:ad:f7:c4:61:58:f1:7c:6f:2f:ba:e7:64	"
+          fingerprints: [3d:22:b0:c1:a7:65:32:db:ad:f7:c4:61:58:f1:7c:6f:2f:ba:e7:64]
+      
+      - attach_workspace:
+           at: ~/
+      
       - run:
           name: "install dependencies"
           command: |
-            apk add --no-cache \
-                python3 \
-                py3-pip \
-            && pip3 install --upgrade pip \
-            && pip3 install \
-                awscli \
-            && rm -rf /var/cache/apk/*
             apk add --update ansible
-      - attach_workspace:
-          at: .circleci/ansible
+            apk add --update tar gzip ansible nodejs npm curl
+            pip install awscli
+      
       - run:
           name: Configure server
           command: |
-            cat .circleci/ansible/inventory.txt
-            ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/configure-server.yml 
+            echo ENVIRONMENT=production > "backend/.env"
+            echo TYPEORM_CONNECTION=postgres >> "backend/.env"
+            echo TYPEORM_ENTITIES=./src/modules/domain/**/*.entity.ts >> "backend/.env"
+            echo TYPEORM_MIGRATIONS=./src/migrations/*.ts >> "backend/.env"
+            echo TYPEORM_MIGRATIONS_DIR=./src/migrations >> "backend/.env"
+            echo NODE_ENV=production >> "backend/.env"
+            echo TYPEORM_HOST=$TYPEORM_HOST >> "backend/.env"
+            echo TYPEORM_PORT=$TYPEORM_PORT >> "backend/.env"
+            echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> "backend/.env"
+            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> "backend/.env"
+            echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env"
+            cat backend/.env
+            cd .circleci/ansible
+            cat inventory.txt
+            ansible-playbook -i inventory.txt configure-server.yml
 
   run-migrations:
     docker:
