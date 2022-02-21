@@ -216,16 +216,16 @@ jobs:
       - checkout
       - restore_cache:
           keys: [backend-build]
+      - attach_workspace:
+          at: ~/
+
       - run:
           name: Run migrations
           command: |
             cd backend
-            npm i
-            npm install
-            npm run build
-            npm audit fix
-            npm run migrations > migrations_dump.txt
-            cat migrations_dump.txt
+            npm run migrations:revert
+            npm run migrations >> migration_output.txt
+            cat migration_output.txt
       - run:
           name: Send migration results to memstash
           command: |
@@ -233,6 +233,10 @@ jobs:
             then
               curl -H "Content-Type: text/plain" -H "token: a0041c4f-b6cc-4e5d-a506-112691f936e8" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID}
             fi
+      - save_cache:
+          paths: [backend/node_modules]
+          key: backend-build
+      
       - destroy-environment
       - revert-migrations
 
