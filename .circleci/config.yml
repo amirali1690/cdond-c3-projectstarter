@@ -192,8 +192,9 @@ jobs:
       - run:
           name: "install dependencies"
           command: |
+            apk update && apk upgrade
             apk add --update ansible
-            apk add nodejs=16.14.0
+            apk add --update nodejs
             apk add --update tar gzip npm curl
             pip install awscli
       - attach_workspace:
