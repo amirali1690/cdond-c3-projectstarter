@@ -193,7 +193,8 @@ jobs:
           name: "install dependencies"
           command: |
             apk add --update ansible
-            apk add --update tar gzip ansible nodejs=16.14.0 npm curl
+            apk add nodejs=16.14.0
+            apk add --update tar gzip npm curl
             pip install awscli
       - attach_workspace:
           at: .circleci/ansible
