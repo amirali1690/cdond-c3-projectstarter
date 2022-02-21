@@ -21,7 +21,7 @@
     name: ["nodejs", "npm"]
     state: latest
     update_cache: yes
-    force_apt_get: no
+    force_apt_get: yes
 
 - name: "install pm2"
   become: yes
