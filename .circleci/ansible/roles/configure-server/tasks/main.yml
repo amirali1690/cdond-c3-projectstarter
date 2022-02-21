@@ -16,7 +16,6 @@
     name: ["nodejs"]
     state: latest
     update_cache: yes
-    force_apt_get: yes
 
 - name: "install dependencies."
   become: yes
@@ -24,8 +23,7 @@
     name: ["npm"]
     state: latest
     update_cache: yes
-    force_apt_get: yes
-
+    
 - name: "install pm2"
   become: yes
   npm:
