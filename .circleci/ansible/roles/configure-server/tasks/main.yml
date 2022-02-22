@@ -14,15 +14,20 @@
   apt:
     autoremove: yes
 
-- name: "install nvm,npm,node"
+- name: "install nvm"
   become: yes
   become: true
   shell: |
     curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
     source ~/.profile
-    nvm install --lts
 
-- name: "install dependencies."
+- name: "install node"
+  become: yes
+  become: true
+  shell: |
+    nvm install --lts
+    
+- name: "install npm"
   become: yes
   apt:
     name: ["npm"]
