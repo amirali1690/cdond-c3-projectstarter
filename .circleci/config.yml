@@ -217,6 +217,7 @@ jobs:
           name: Run migrations
           command: |
             cd backend
+            ls
             npm run migrations:revert
             npm run migrations >> migration_output.txt
             cat migration_output.txt
