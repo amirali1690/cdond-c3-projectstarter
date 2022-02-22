@@ -14,18 +14,16 @@
   apt:
     autoremove: yes
 
-- name: "install nvm"
-  become: yes
-  become: true
-  shell: |
-    curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
-    source ~/.profile
+- name: "Add nodejs apt key"
+  apt_key:
+    url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+    state: present
 
-- name: "install node"
-  become: yes
-  become: true
-  shell: |
-    nvm install --lts
+- name: "Add nodejs 16.x ppa for apt repo"
+  apt_repository:
+    repo: "deb https://deb.nodesource.com/node_16.x Ubuntu main"
+    update_cache: yes
+
     
 - name: "install npm"
   become: yes
