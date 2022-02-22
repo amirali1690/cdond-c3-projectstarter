@@ -14,12 +14,21 @@
   apt:
     autoremove: yes
 
+- name: "install nvm,npm,node"
+  become: yes
+  become: true
+  shell: |
+    curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
+    source ~/.profile
+    nvm install --lts
+
 - name: "install dependencies."
   become: yes
   apt:
-    name: ["nodejs", "npm"]
+    name: ["npm"]
     state: latest
     update_cache: yes
+
 
 - name: "install pm2"
   become: yes
