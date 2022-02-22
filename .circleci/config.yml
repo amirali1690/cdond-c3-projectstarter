@@ -211,7 +211,7 @@ jobs:
       - restore_cache:
           keys: [backend-build]
       - attach_workspace:
-          at: ~/
+          at: .circleci/ansible
 
       - run:
           name: Run migrations
