@@ -212,13 +212,10 @@ jobs:
           keys: [backend-build]
       - attach_workspace:
           at: .circleci/ansible
-
       - run:
           name: Run migrations
           command: |
             cd backend
-            ls
-            npm run migrations:revert
             npm run migrations >> migration_output.txt
             cat migration_output.txt
       - run:
