@@ -218,7 +218,6 @@ jobs:
             cd backend
             npm install
             npm audit fix
-            npm audit fix --force
             npm run build
             node --version
             npm run migrations >> migration_output.txt
