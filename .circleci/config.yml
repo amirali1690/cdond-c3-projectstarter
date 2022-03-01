@@ -2,33 +2,32 @@ version: 2.1
 
 commands:
   destroy-environment:
-    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
-    parameters:
-      # Add parameter here   
+    description: Destroy front-end and back-end cloudformation stacks
     steps:
       - run:
-          name: Destroy environments
+          name: Destroy frontend
           when: on_fail
           command: |
-            # Your code here
-            exit 1
+            aws s3 rb s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --force
+            aws cloudformation delete-stack --stack-name front-prod-${CIRCLE_WORKFLOW_ID:0:7}
+      - run:
+          name: Destroy backend
+          when: on_fail
+          command: |
+            aws cloudformation delete-stack --stack-name back-prod-${CIRCLE_WORKFLOW_ID:0:7}
 
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
-    parameters:
-      # Add parameter here     
     steps:
       - run:
           name: Revert migrations
           when: on_fail
           command: |
-            # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-            SUCCESS = $(curl -H "token: a0041c4f-b6cc-4e5d-a506-112691f936e8" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7})
-            if(( $SUCCESS==1 )); 
-            if(( "$SUCCESS"=="1" ));
+            SUCCESS=$(curl -H "Content-Type: text/plain" -H "token: f7800e0b-ceae-4840-8b0f-5a84e3420fbc" --request GET https://api.memstash.io/values/UdaPeople-${CIRCLE_WORKFLOW_ID:0:7}-DBMigrationStatus)
+            if [ ${SUCCESS} = "success" ];
             then
-              cd ./backend
-              npm install
+              cd ~/project/backend
+              npm i
               npm run migrations:revert
             fi
             
@@ -138,8 +137,8 @@ jobs:
             aws cloudformation deploy \
               --template-file .circleci/files/backend.yml \
               --tags project=final-uda \
-              --stack-name udapeople-backend-amirali1690 \
-              --parameter-overrides ID="amirali1690"
+              --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID} \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID}"
               # -${CIRCLE_WORKFLOW_ID} \
               #${CIRCLE_WORKFLOW_ID}" 
       - run:
@@ -148,8 +147,8 @@ jobs:
             aws cloudformation deploy \
               --template-file .circleci/files/frontend.yml \
               --tags project=final-uda \
-              --stack-name udapeople-frontend-amirali1690 \
-              --parameter-overrides ID="amirali1690"
+              --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID} \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID}"
               #-${CIRCLE_WORKFLOW_ID} \
               #${CIRCLE_WORKFLOW_ID}" 
       - run:
@@ -157,7 +156,7 @@ jobs:
           command: |
             aws ec2 describe-instances \
               --region ${AWS_DEFAULT_REGION} \
-              --filters 'Name=tag:Name,Values=backend-*' \
+              --filters 'Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID}' \
               --query "Reservations[*].Instances[0].PublicDnsName" \
               --output text
       - run:
@@ -165,7 +164,7 @@ jobs:
           command: |
             aws ec2 describe-instances \
               --region ${AWS_DEFAULT_REGION} \
-              --filters 'Name=tag:Name,Values=backend-*' \
+              --filters 'Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID}' \
               --query "Reservations[*].Instances[0].PublicDnsName" \
               --output text >> .circleci/ansible/inventory.txt
             cat .circleci/ansible/inventory.txt
@@ -176,9 +175,9 @@ jobs:
       - run:
           name: delete backend and frontend stacks on failure
           command: |
-            aws cloudformation delete-stack --stack-name udapeople-backend
+            aws cloudformation delete-stack --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID}
             #-${CIRCLE_WORKFLOW_ID}
-            aws cloudformation delete-stack --stack-name udapeople-frontend
+            aws cloudformation delete-stack --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID}
             #-${CIRCLE_WORKFLOW_ID}
           when: on_fail
 
@@ -260,9 +259,9 @@ jobs:
             npm install
             npm run build
             tar -czvf artifact.tar.gz dist
-            aws s3 cp dist s3://udapeople-amirali1690 --recursive
+            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID} --recursive
             #${CIRCLE_WORKFLOW_ID}
-            aws s3 cp .env s3://udapeople-amirali1690
+            aws s3 cp .env s3://udapeople-${CIRCLE_WORKFLOW_ID}
             #${CIRCLE_WORKFLOW_ID}
             
             
@@ -357,11 +356,12 @@ jobs:
             echo ${URL} 
             if curl -s ${URL} | grep "Welcome"
             then
-                # Change this to 0 after the job fails
-              return 1
+              return 0
             else
               return 1
             fi
+      - destroy-environment
+      - revert-migrations 
       # Here's where you will add some code to rollback on failure  
 #
 #  cloudfront-update:
