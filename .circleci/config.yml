@@ -295,6 +295,10 @@ jobs:
       - run:
           name: Deploy backend
           command: |
+            ls
+            cd /root/project/backend
+            npm install
+            npm i
             echo ENVIRONMENT=production >> "backend/.env"
             echo NODE_ENV=production >> "backend/.env"
             echo TYPEORM_CONNECTION=postgres >> "backend/.env"
@@ -306,15 +310,14 @@ jobs:
             echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> "backend/.env"
             echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> "backend/.env"
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env"
-            cd backend
-            npm i
             npm run build
-            cp package* ./dist
-            cd ..
+            npm run prestart:prod
+            cd /root/project/
             # Zip the directory
-            tar -C backend -czvf artifact.tar .
-            cp artifact.tar ~/project/.circleci/ansible/roles/deploy/files
+            tar -zcvf api.tar.gz backend/
+            mv api.tar.gz ~/project/.circleci/ansible/roles/deploy/files/
             echo "Contents  of the inventory.txt file is -------"
+            cd ../..
             cat .circleci/ansible/inventory.txt
             ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/deploy-backend.yml -vv
 
