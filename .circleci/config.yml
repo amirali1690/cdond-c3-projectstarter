@@ -316,7 +316,7 @@ jobs:
             tar -zcvf api.tar.gz backend/
             mv api.tar.gz ~/project/.circleci/ansible/roles/deploy/files/
             echo "Contents  of the inventory.txt file is -------"
-            cd ../..
+            cd ~/project/
             cat .circleci/ansible/inventory.txt
             ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/deploy-backend.yml -vv
 
