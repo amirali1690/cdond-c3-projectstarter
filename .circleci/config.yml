@@ -317,6 +317,7 @@ jobs:
             mv api.tar.gz ~/project/.circleci/ansible/roles/deploy/files/
             echo "Contents  of the inventory.txt file is -------"
             cd ~/project/
+            ls
             cat .circleci/ansible/inventory.txt
             ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/deploy-backend.yml -vv
 
@@ -346,6 +347,7 @@ jobs:
       - run:
           name: Backend smoke test.
           command: |
+            echo "${API_URL}/api/status"
             if curl "${API_URL}/api/status" | grep "ok"
             then
                 return 0
