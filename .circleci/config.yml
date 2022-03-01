@@ -335,18 +335,13 @@ jobs:
           command: |
             apk add --no-cache curl
             apk add --no-cache --upgrade bash
-            apk add --no-cache --update ansible
             apk add --no-cache openssh-client
             pip3 install awscli
       - run:
-          name: Get backend url
+          name: Backend smoke test.
           command: |
             export BACKEND_IP=$(aws ec2 describe-instances --region ${AWS_DEFAULT_REGION} --query 'Reservations[*].Instances[*].PublicIpAddress' --filters "Name=tag:project,Values=final-uda" --output text )
             export API_URL="http://${BACKEND_IP}:3030"
-            echo "${API_URL}"
-      - run:
-          name: Backend smoke test.
-          command: |
             echo "${API_URL}/api/status"
             if curl "${API_URL}/api/status" | grep "ok"
             then
