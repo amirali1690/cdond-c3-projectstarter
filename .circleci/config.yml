@@ -359,8 +359,6 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Update cloudfront distribution  
-      - run:
           name: Update cloudfront distribution
           command: |
             aws cloudformation deploy \
