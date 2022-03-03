@@ -209,7 +209,6 @@ jobs:
       - run:
           name: Send migration results to memstash
           command: |
-            export BUCKET_IP=curl -d 'email=your-emaila@domain.com' https://kvdb.io
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
               curl https://kvdb.io/Bb8rPwnpqeubdtgge4iLv/migration  -d '1'
