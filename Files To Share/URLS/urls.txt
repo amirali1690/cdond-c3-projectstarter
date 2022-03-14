@@ -1,2 +1,2 @@
 https://github.com/amirali1690/cdond-c3-projectstarter
-http://udapeople-d99d10ff-fd2e-4b06-a4a8-9bfad5534ee5.s3-website-us-west-2.amazonaws.com/
+http://udapeople-36749136-1528-48ed-874f-557d6060f434.s3-website-us-west-2.amazonaws.com/
